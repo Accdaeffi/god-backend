@@ -1,0 +1,74 @@
+package ru.ifmo.mpi.magichospital.god.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import ru.ifmo.mpi.magichospital.god.domain.dao.God;
+import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
+import ru.ifmo.mpi.magichospital.god.domain.dao.dict.PrayerStatus;
+import ru.ifmo.mpi.magichospital.god.domain.repository.GodRepository;
+import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerRepository;
+import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerStatusRepository;
+import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
+import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
+
+@Service
+public class PrayerService {
+	
+	GodRepository godRepository;
+	PrayerRepository prayerRepository;
+	PrayerStatusRepository prayerStatusRepository;
+	
+	public PrayerService(GodRepository godRepository, 
+			PrayerRepository prayerRepository, 
+			PrayerStatusRepository prayerStatusRepository) {
+		this.godRepository = godRepository;
+		this.prayerRepository = prayerRepository;
+		this.prayerStatusRepository = prayerStatusRepository;
+	}
+
+	public List<Prayer> getPrayers(String login) 
+			throws NotFoundException {
+		
+		Optional<God> optionalGod = godRepository.findByLogin(login);
+        if (optionalGod.isPresent()) {
+        	return prayerRepository.findByGodId(optionalGod.get().getId());
+        } else {
+        	throw new NotFoundException("Not found!");
+        }
+	}
+
+	public void setPrayerStatus(String login, int prayerId, int statusId) 
+			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException {
+		
+		Optional<God> optionalGod = godRepository.findByLogin(login);
+		Optional<Prayer> optionalPrayer = prayerRepository.findById(prayerId);
+		Optional<PrayerStatus> optionalStatus = prayerStatusRepository.findById(statusId);
+		
+        if (optionalGod.isPresent() && 
+        		optionalPrayer.isPresent() && 
+        		optionalStatus.isPresent()) {
+        	
+        	God god = optionalGod.get();
+        	Prayer prayer = optionalPrayer.get();
+        	PrayerStatus status = optionalStatus.get(); 
+        	
+        	if (god.equals(prayer.getGod())) {
+        		if (prayer.getStatus().getCode() == PrayerStatus.CODE_NEW) {
+            		prayer.setStatus(status);
+        		} else {
+        			throw new PrayerAlreadyAnsweredException("We already received answer for this prayer!");
+        		}
+        	} else {
+        		throw new SecurityException("Forbidden");
+        	}
+        } else {
+        	throw new NotFoundException("Not found!");
+        }
+        
+		
+	}
+
+}
