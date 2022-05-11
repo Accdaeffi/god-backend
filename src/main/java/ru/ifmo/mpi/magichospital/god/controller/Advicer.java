@@ -19,7 +19,7 @@ public class Advicer {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", e.getMessage());
 
-        return new ResponseEntity<>(body, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
     
     @ExceptionHandler(NotFoundException.class)
@@ -46,6 +46,17 @@ public class Advicer {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", "Error with database content, please contact with administrator.");
 
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(MeaninglessDataException.class)
+    public ResponseEntity<Object> handleException(MeaninglessDataException e) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+
+        body.put("message", e.getMessage());
+        
+        // TODO make better exception
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

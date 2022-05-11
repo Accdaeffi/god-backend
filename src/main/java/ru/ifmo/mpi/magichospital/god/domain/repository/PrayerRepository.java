@@ -10,5 +10,5 @@ import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 @Repository
 public interface PrayerRepository extends CrudRepository<Prayer, Integer> {
 	List<Prayer> findByGodId(int godId);
-	List<Prayer> findByGodIdAndStatus(int godId, int statusId);
+	List<Prayer> findByGodIdAndStatusId(int godId, int statusId);
 }

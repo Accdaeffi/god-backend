@@ -12,6 +12,7 @@ import ru.ifmo.mpi.magichospital.god.domain.repository.GodRepository;
 import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerRepository;
 import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerStatusRepository;
 import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
+import ru.ifmo.mpi.magichospital.god.exception.MeaninglessDataException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
 import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
 
@@ -49,14 +50,14 @@ public class PrayerService {
         	PrayerStatus newStatus = prayerStatusRepository.findByCode(PrayerStatus.CODE_NEW)
         			.orElseThrow(DictContentException::new);
         	
-        	return prayerRepository.findByGodIdAndStatus(optionalGod.get().getId(), newStatus.getId());
+        	return prayerRepository.findByGodIdAndStatusId(optionalGod.get().getId(), newStatus.getId());
         } else {
         	throw new NotFoundException("Not found!");
         }
 	}
 
 	public void setPrayerStatus(String login, int prayerId, int statusId) 
-			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException {
+			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException {
 		
 		Optional<God> optionalGod = godRepository.findByLogin(login);
 		Optional<Prayer> optionalPrayer = prayerRepository.findById(prayerId);
@@ -70,14 +71,19 @@ public class PrayerService {
         	Prayer prayer = optionalPrayer.get();
         	PrayerStatus status = optionalStatus.get(); 
         	
-        	if (god.equals(prayer.getGod())) {
-        		if (prayer.getStatus().getCode() == PrayerStatus.CODE_NEW) {
-            		prayer.setStatus(status);
-        		} else {
-        			throw new PrayerAlreadyAnsweredException("We already received answer for this prayer!");
-        		}
+        	if (!status.getCode().equals(PrayerStatus.CODE_NEW)) {
+            	if (god.equals(prayer.getGod())) {
+            		if (prayer.getStatus().getCode().equals(PrayerStatus.CODE_NEW)) {
+                		prayer.setStatus(status);
+                		prayerRepository.save(prayer);
+            		} else {
+            			throw new PrayerAlreadyAnsweredException("We already received answer for this prayer!");
+            		}
+            	} else {
+            		throw new SecurityException("Forbidden");
+            	}
         	} else {
-        		throw new SecurityException("Forbidden");
+        		throw new MeaninglessDataException("You can't set \"new\" status!");
         	}
         } else {
         	throw new NotFoundException("Not found!");
