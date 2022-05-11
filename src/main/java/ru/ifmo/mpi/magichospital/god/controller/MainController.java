@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
+import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
 import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
 import ru.ifmo.mpi.magichospital.god.service.PrayerService;
@@ -26,6 +27,16 @@ public class MainController {
 			throws NotFoundException {
 		if (principal.getName().equals(login)) {
 			return prayerService.getPrayers(login);
+		} else {
+			throw new SecurityException("Forbidden");
+		}
+	}
+	
+	@GetMapping("/god/{login}/prayers/unanswered")
+	public List<Prayer> getUnansweredPrayers(@PathVariable String login, Principal principal) 
+			throws NotFoundException, DictContentException {
+		if (principal.getName().equals(login)) {
+			return prayerService.getUnansweredPrayers(login);
 		} else {
 			throw new SecurityException("Forbidden");
 		}

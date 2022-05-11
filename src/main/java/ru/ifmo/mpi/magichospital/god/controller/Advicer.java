@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
-import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
+import ru.ifmo.mpi.magichospital.god.exception.*;
 
 @ControllerAdvice
 public class Advicer {
@@ -37,6 +36,15 @@ public class Advicer {
 
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("message", e.getMessage());
+
+        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
+    @ExceptionHandler(DictContentException.class)
+    public ResponseEntity<Object> handleException(DictContentException e) {
+
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("message", "Error with database content, please contact with administrator.");
 
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }

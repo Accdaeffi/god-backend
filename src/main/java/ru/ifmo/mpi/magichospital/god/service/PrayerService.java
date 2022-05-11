@@ -11,6 +11,7 @@ import ru.ifmo.mpi.magichospital.god.domain.dao.dict.PrayerStatus;
 import ru.ifmo.mpi.magichospital.god.domain.repository.GodRepository;
 import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerRepository;
 import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerStatusRepository;
+import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
 import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
 
@@ -35,6 +36,20 @@ public class PrayerService {
 		Optional<God> optionalGod = godRepository.findByLogin(login);
         if (optionalGod.isPresent()) {
         	return prayerRepository.findByGodId(optionalGod.get().getId());
+        } else {
+        	throw new NotFoundException("Not found!");
+        }
+	}
+	
+	public List<Prayer> getUnansweredPrayers(String login) 
+			throws NotFoundException, DictContentException {
+		
+		Optional<God> optionalGod = godRepository.findByLogin(login);
+        if (optionalGod.isPresent()) {
+        	PrayerStatus newStatus = prayerStatusRepository.findByCode(PrayerStatus.CODE_NEW)
+        			.orElseThrow(DictContentException::new);
+        	
+        	return prayerRepository.findByGodIdAndStatus(optionalGod.get().getId(), newStatus.getId());
         } else {
         	throw new NotFoundException("Not found!");
         }
