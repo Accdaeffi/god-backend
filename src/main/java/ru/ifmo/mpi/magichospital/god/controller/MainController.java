@@ -2,6 +2,7 @@ package ru.ifmo.mpi.magichospital.god.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
+import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerDTO;
 import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.MeaninglessDataException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
@@ -24,20 +26,26 @@ public class MainController {
 	PrayerService prayerService;
 
 	@GetMapping("/god/{login}/prayers")
-	public List<Prayer> getPrayers(@PathVariable String login, Principal principal) 
+	public List<PrayerDTO> getPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException {
 		if (principal.getName().equals(login)) {
-			return prayerService.getPrayers(login);
+			
+			List<Prayer> prayers = prayerService.getPrayers(login);		
+			return convertPrayerListToPrayerDTOList(prayers);
+			
 		} else {
 			throw new SecurityException("Forbidden");
 		}
 	}
 	
 	@GetMapping("/god/{login}/prayers/unanswered")
-	public List<Prayer> getUnansweredPrayers(@PathVariable String login, Principal principal) 
+	public List<PrayerDTO> getUnansweredPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException, DictContentException {
 		if (principal.getName().equals(login)) {
-			return prayerService.getUnansweredPrayers(login);
+			
+			List<Prayer> prayers = prayerService.getUnansweredPrayers(login);		
+			return convertPrayerListToPrayerDTOList(prayers);
+			
 		} else {
 			throw new SecurityException("Forbidden");
 		}
@@ -56,6 +64,14 @@ public class MainController {
 		} else {
 			throw new SecurityException("Forbidden");
 		}
+	}
+	
+	private List<PrayerDTO> convertPrayerListToPrayerDTOList(List<Prayer> prayers) {
+		List<PrayerDTO> prayerDTOs =  prayers.stream()
+				.map(prayer -> new PrayerDTO(prayer))
+				.collect(Collectors.toList());
+			
+			return prayerDTOs;
 	}
 	
 }
