@@ -22,10 +22,13 @@ import ru.ifmo.mpi.magichospital.god.service.PrayerService;
 @RestController
 public class MainController {
 	
+	private static final String API_PREFIX = "/api/v1";
+	private static final String GOD_PREFIX = "/god";
+	
 	@Autowired
 	PrayerService prayerService;
 
-	@GetMapping("/god/{login}/prayers")
+	@GetMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers")
 	public List<PrayerDTO> getPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException {
 		if (principal.getName().equals(login)) {
@@ -38,7 +41,7 @@ public class MainController {
 		}
 	}
 	
-	@GetMapping("/god/{login}/prayers/unanswered")
+	@GetMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/unanswered")
 	public List<PrayerDTO> getUnansweredPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException, DictContentException {
 		if (principal.getName().equals(login)) {
@@ -51,7 +54,7 @@ public class MainController {
 		}
 	}
 	
-	@PostMapping("/god/{login}/prayers/{prayerId}/status/{statusId}")
+	@PostMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/{prayerId}/status/{statusId}")
 	public ResponseEntity<?> updatePrayerStatus(@PathVariable String login, 
 			@PathVariable int prayerId, 
 			@PathVariable int statusId,
