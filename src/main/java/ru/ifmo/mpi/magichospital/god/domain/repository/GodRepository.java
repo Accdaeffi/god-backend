@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import ru.ifmo.mpi.magichospital.god.domain.dao.God;
 
 @Repository
-public interface GodRepository extends CrudRepository<God, String> {
+public interface GodRepository extends CrudRepository<God, Integer> {
 	Optional<God> findByLogin(String login);
 }
