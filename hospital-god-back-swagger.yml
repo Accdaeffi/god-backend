@@ -1,0 +1,156 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: https://localhost:8080
+    description: Generated server url
+paths:
+  /api/v1/god/{login}/prayers/{prayerId}/status/{statusId}:
+    post:
+      tags:
+        - main-controller
+      summary: Update status of prayer
+      operationId: updatePrayerStatus
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: prayerId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: statusId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Get list
+        '400':
+          description: Incorrect values (SQL injection, for example). Full description in "message" field
+          content: {}
+        '401':
+          description: Trying to answer prayer of another god
+          content: {}
+        '404':
+          description: No such god
+          content: {}
+        '500':
+          description: Inner exception - like no such prayer status, or prayer already answered, or you trying to make strange prayer status. Description in "message" field.
+          content: {}
+  /api/v1/god/{login}/prayers:
+    get:
+      tags:
+        - main-controller
+      summary: Get list of all prayers
+      operationId: getPrayers
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrayerListDTO'
+        '400':
+          description: Incorrect values (SQL injection, for example). Full description in "message" field
+          content: {}
+        '401':
+          description: Trying to get list of another god
+          content: {}
+        '404':
+          description: No such god
+          content: {}
+        '500':
+          description: I really don't know how this can happen, so, if you get this exception - just try to output "message" field
+          content: {}
+  /api/v1/god/{login}/prayers/unanswered:
+    get:
+      tags:
+        - main-controller
+      summary: Get list of unanswered prayers
+      operationId: getUnansweredPrayers
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrayerListDTO'
+        '400':
+          description: Incorrect values (SQL injection, for example). Full description in "message" field
+          content: {}
+        '401':
+          description: Trying to get list of another god
+          content: {}
+        '404':
+          description: No such god
+          content: {}
+        '500':
+          description: Inner database exception. Description in "message" field.
+          content: {}
+components:
+  schemas:
+    HealerDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        socialStatus:
+          type: string
+        male:
+          type: boolean
+    PatientDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        socialStatus:
+          type: string
+        mage:
+          type: boolean
+        male:
+          type: boolean
+    PrayerDTO:
+      type: object
+      properties:
+        healer:
+          $ref: '#/components/schemas/HealerDTO'
+        patient:
+          $ref: '#/components/schemas/PatientDTO'
+        text:
+          type: string
+        time:
+          type: string
+          format: date-time
+        prayerStatus:
+          type: string
+    PrayerListDTO:
+      type: object
+      properties:
+        prayers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrayerDTO'
