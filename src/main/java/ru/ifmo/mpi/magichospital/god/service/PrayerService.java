@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.github.rkpunjal.sqlsafe.SqlSafeUtil;
+
 import ru.ifmo.mpi.magichospital.god.domain.dao.God;
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 import ru.ifmo.mpi.magichospital.god.domain.dao.dict.PrayerStatus;
@@ -14,6 +16,7 @@ import ru.ifmo.mpi.magichospital.god.domain.repository.PrayerStatusRepository;
 import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.MeaninglessDataException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
+import ru.ifmo.mpi.magichospital.god.exception.PossibleSqlInjectionAttackException;
 import ru.ifmo.mpi.magichospital.god.exception.PrayerAlreadyAnsweredException;
 
 @Service
@@ -32,7 +35,11 @@ public class PrayerService {
 	}
 
 	public List<Prayer> getPrayers(String login) 
-			throws NotFoundException {
+			throws NotFoundException, PossibleSqlInjectionAttackException {
+		
+		if (!SqlSafeUtil.isSqlInjectionSafe(login)) {
+            throw new PossibleSqlInjectionAttackException("Possible sql injection attack!");
+        }
 		
 		Optional<God> optionalGod = godRepository.findByLogin(login);
         if (optionalGod.isPresent()) {
@@ -43,7 +50,11 @@ public class PrayerService {
 	}
 	
 	public List<Prayer> getUnansweredPrayers(String login) 
-			throws NotFoundException, DictContentException {
+			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
+		
+		if (!SqlSafeUtil.isSqlInjectionSafe(login)) {
+            throw new PossibleSqlInjectionAttackException("Possible sql injection attack!");
+        }
 		
 		Optional<God> optionalGod = godRepository.findByLogin(login);
         if (optionalGod.isPresent()) {
@@ -57,7 +68,11 @@ public class PrayerService {
 	}
 
 	public void setPrayerStatus(String login, int prayerId, int statusId) 
-			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException {
+			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {
+		
+		if (!SqlSafeUtil.isSqlInjectionSafe(login)) {
+            throw new PossibleSqlInjectionAttackException("Possible sql injection attack!");
+        }
 		
 		Optional<God> optionalGod = godRepository.findByLogin(login);
 		Optional<Prayer> optionalPrayer = prayerRepository.findById(prayerId);
