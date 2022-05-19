@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerDTO;
+import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerListDTO;
 import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.MeaninglessDataException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
@@ -29,12 +30,12 @@ public class MainController {
 	PrayerService prayerService;
 
 	@GetMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers")
-	public List<PrayerDTO> getPrayers(@PathVariable String login, Principal principal) 
+	public PrayerListDTO getPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException {
 		if (principal.getName().equals(login)) {
 			
 			List<Prayer> prayers = prayerService.getPrayers(login);		
-			return convertPrayerListToPrayerDTOList(prayers);
+			return new PrayerListDTO(convertPrayerListToPrayerDTOList(prayers));
 			
 		} else {
 			throw new SecurityException("Forbidden");
@@ -42,12 +43,12 @@ public class MainController {
 	}
 	
 	@GetMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/unanswered")
-	public List<PrayerDTO> getUnansweredPrayers(@PathVariable String login, Principal principal) 
+	public PrayerListDTO getUnansweredPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException, DictContentException {
 		if (principal.getName().equals(login)) {
 			
 			List<Prayer> prayers = prayerService.getUnansweredPrayers(login);		
-			return convertPrayerListToPrayerDTOList(prayers);
+			return new PrayerListDTO(convertPrayerListToPrayerDTOList(prayers));
 			
 		} else {
 			throw new SecurityException("Forbidden");

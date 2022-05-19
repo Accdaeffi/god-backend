@@ -1,8 +1,5 @@
 package ru.ifmo.mpi.magichospital.god.domain.dto;
 
-import java.time.LocalDateTime;
-
-import lombok.Data;
 import lombok.Getter;
 import ru.ifmo.mpi.magichospital.god.domain.dao.Patient;
 
