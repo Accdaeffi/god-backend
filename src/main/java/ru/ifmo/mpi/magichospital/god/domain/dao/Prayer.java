@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -24,18 +25,14 @@ public class Prayer {
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-	
-    @ManyToOne(targetEntity = Healer.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "healer_id")
-    private Healer healer;
     
     @ManyToOne(targetEntity = God.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "god_id")
     private God god;
     
-    @ManyToOne(targetEntity = Patient.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+    @OneToOne
+    @JoinColumn(name = "id", referencedColumnName = "prayer_id")
+    private DiseaseCase diseaseCase;
     
     @Column(name = "pray_text")
     private String text;

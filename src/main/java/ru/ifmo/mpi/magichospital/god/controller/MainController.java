@@ -85,6 +85,36 @@ public class MainController {
 		}
 	}
 	
+	@Operation(summary = "Get last unanswered prayer")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Get one prayer", 
+			    content = { @Content(mediaType = "application/json", 
+			      schema = @Schema(implementation = PrayerDTO.class)) }),
+			  @ApiResponse(responseCode = "400", description = "Incorrect values (SQL injection, for example). Full description in \"message\" field", 
+			    content = @Content),
+			  @ApiResponse(responseCode = "401", description = "Trying to get list of another god", 
+			    content = @Content),
+			  @ApiResponse(responseCode = "404", description = "No such god", 
+			    content = @Content),
+			  @ApiResponse(responseCode = "500", description = "Inner database exception. Description in \"message\" field.", 
+			    content = @Content)})
+	@GetMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/unanswered/last")
+	public PrayerDTO getLastUnansweredPrayers(@PathVariable String login, Principal principal) 
+			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
+		if (principal.getName().equals(login)) {
+			
+			Prayer prayer = prayerService.getLastUnansweredPrayer(login);
+			if (prayer != null) {
+				return new PrayerDTO(prayer);
+			} else {
+				return null;
+			}
+			
+		} else {
+			throw new SecurityException("Forbidden");
+		}
+	}
+	
 	@Operation(summary = "Update status of prayer")
 	@ApiResponses(value = { 
 			  @ApiResponse(responseCode = "200", description = "Get list", 

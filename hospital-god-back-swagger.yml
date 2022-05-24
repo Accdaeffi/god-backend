@@ -107,6 +107,37 @@ paths:
         '500':
           description: Inner database exception. Description in "message" field.
           content: {}
+  /api/v1/god/{login}/prayers/unanswered/last:
+    get:
+      tags:
+        - main-controller
+      summary: Get last unanswered prayer
+      operationId: getLastUnansweredPrayers
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get one prayer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrayerDTO'
+        '400':
+          description: Incorrect values (SQL injection, for example). Full description in "message" field
+          content: {}
+        '401':
+          description: Trying to get list of another god
+          content: {}
+        '404':
+          description: No such god
+          content: {}
+        '500':
+          description: Inner database exception. Description in "message" field.
+          content: {}
 components:
   schemas:
     HealerDTO:
@@ -127,11 +158,13 @@ components:
           type: string
         surname:
           type: string
+        patronymic:
+          type: string
         socialStatus:
           type: string
-        mage:
-          type: boolean
         male:
+          type: boolean
+        mage:
           type: boolean
     PrayerDTO:
       type: object
@@ -140,6 +173,8 @@ components:
           $ref: '#/components/schemas/HealerDTO'
         patient:
           $ref: '#/components/schemas/PatientDTO'
+        diseaseName:
+          type: string
         text:
           type: string
         time:
@@ -154,3 +189,4 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PrayerDTO'
+    

@@ -66,6 +66,18 @@ public class PrayerService {
         	throw new NotFoundException("Not found!");
         }
 	}
+	
+
+	public Prayer getLastUnansweredPrayer(String login) 
+			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
+		List<Prayer> prayers = getUnansweredPrayers(login);
+		
+		if (prayers == null) {
+			return null;
+		} else {
+			return getUnansweredPrayers(login).get(0);
+		}
+	}
 
 	public void setPrayerStatus(String login, int prayerId, int statusId) 
 			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {

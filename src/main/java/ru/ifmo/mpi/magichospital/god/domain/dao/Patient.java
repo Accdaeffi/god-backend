@@ -29,6 +29,9 @@ public class Patient {
     @Column(name = "surname")
     private String surname;
     
+    @Column(name = "patronymic")
+    private String patronymic;
+    
     @Column(name = "is_male")
     private boolean isMale;
     
