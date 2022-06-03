@@ -36,6 +36,4 @@ public class Healer {
     @JoinColumn(name = "social_status")
     private SocialStatus socialStatus;
     
-    
-
 }
