@@ -72,7 +72,7 @@ public class PrayerService {
 			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
 		List<Prayer> prayers = getUnansweredPrayers(login);
 		
-		if (prayers == null) {
+		if (prayers == null || prayers.size() == 0) {
 			return null;
 		} else {
 			return getUnansweredPrayers(login).get(0);
