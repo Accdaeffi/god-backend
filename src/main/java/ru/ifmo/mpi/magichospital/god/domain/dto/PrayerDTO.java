@@ -12,7 +12,7 @@ public class PrayerDTO {
     private HealerDTO healer;
     private PatientDTO patient; 
     private String diseaseName;
-    private String text;    
+    private String infoMsg;    
     private LocalDateTime time;    
     private String prayerStatus;
     
@@ -20,7 +20,7 @@ public class PrayerDTO {
     	this.id = prayer.getId();
     	this.time = prayer.getTime();
     	this.prayerStatus = prayer.getStatus().getCode();
-    	this.text = prayer.getText();
+    	this.infoMsg = prayer.getText();
     	this.patient = new PatientDTO(prayer.getDiseaseCase().getPatient());
     	this.healer = new HealerDTO(prayer.getDiseaseCase().getHealer());
     	this.diseaseName = prayer.getDiseaseCase().getDisease().getTitle();
