@@ -1,9 +1,9 @@
 package ru.ifmo.mpi.magichospital.god.domain.dto;
 
-import lombok.Getter;
+import lombok.Data;
 import ru.ifmo.mpi.magichospital.god.domain.dao.Patient;
 
-@Getter
+@Data
 public class PatientDTO {
 
     private String name;    

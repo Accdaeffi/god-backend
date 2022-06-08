@@ -2,12 +2,13 @@ package ru.ifmo.mpi.magichospital.god.domain.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Getter;
+import lombok.Data;
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 
-@Getter
+@Data
 public class PrayerDTO {
 
+	private int id;
     private HealerDTO healer;
     private PatientDTO patient; 
     private String diseaseName;
@@ -16,6 +17,7 @@ public class PrayerDTO {
     private String prayerStatus;
     
     public PrayerDTO(Prayer prayer) {
+    	this.id = prayer.getId();
     	this.time = prayer.getTime();
     	this.prayerStatus = prayer.getStatus().getCode();
     	this.text = prayer.getText();
