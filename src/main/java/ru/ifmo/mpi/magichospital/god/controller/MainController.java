@@ -104,7 +104,9 @@ public class MainController {
 	public PrayerDTO getLastUnansweredPrayers(@PathVariable String login, Principal principal) 
 			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
 		if (principal.getName().equals(login)) {
-			
+
+			System.out.println("get");
+
 			Prayer prayer = prayerService.getLastUnansweredPrayer(login);
 			if (prayer != null) {
 				return new PrayerDTO(prayer);
@@ -135,13 +137,19 @@ public class MainController {
 			@RequestBody PrayerStatusChangeDTO statusChangeDTO,
 			Principal principal) 
 					throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {
-		
+
+		System.out.println("post");
+
 		if (principal.getName().equals(login)) {
 			prayerService.setPrayerStatus(login, prayerId, statusChangeDTO.getStatus());
+
+			System.out.println("finished");
+
 			return ResponseEntity.ok().build();
 		} else {
 			throw new SecurityException("Forbidden");
 		}
+
 	}
 	
 	private List<PrayerDTO> convertPrayerListToPrayerDTOList(List<Prayer> prayers) {
