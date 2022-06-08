@@ -8,7 +8,7 @@ import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 @Data
 public class PrayerDTO {
 
-	private int id;
+	private int prayerId;
     private HealerDTO healer;
     private PatientDTO patient; 
     private String diseaseName;
@@ -17,7 +17,7 @@ public class PrayerDTO {
     private String prayerStatus;
     
     public PrayerDTO(Prayer prayer) {
-    	this.id = prayer.getId();
+    	this.prayerId = prayer.getId();
     	this.time = prayer.getTime();
     	this.prayerStatus = prayer.getStatus().getCode();
     	this.infoMsg = prayer.getText();
