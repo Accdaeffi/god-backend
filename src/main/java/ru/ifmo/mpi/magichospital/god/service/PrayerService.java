@@ -79,7 +79,7 @@ public class PrayerService {
 		}
 	}
 
-	public void setPrayerStatus(String login, int prayerId, int statusId) 
+	public void setPrayerStatus(String login, int prayerId, String statusCode) 
 			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {
 		
 		if (!SqlSafeUtil.isSqlInjectionSafe(login)) {
@@ -88,7 +88,7 @@ public class PrayerService {
 		
 		Optional<God> optionalGod = godRepository.findByLogin(login);
 		Optional<Prayer> optionalPrayer = prayerRepository.findById(prayerId);
-		Optional<PrayerStatus> optionalStatus = prayerStatusRepository.findById(statusId);
+		Optional<PrayerStatus> optionalStatus = prayerStatusRepository.findByCode(statusCode);
 		
         if (optionalGod.isPresent() && 
         		optionalPrayer.isPresent() && 

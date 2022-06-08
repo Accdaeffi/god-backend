@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ru.ifmo.mpi.magichospital.god.domain.dao.Prayer;
 import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerDTO;
 import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerListDTO;
+import ru.ifmo.mpi.magichospital.god.domain.dto.PrayerStatusChangeDTO;
 import ru.ifmo.mpi.magichospital.god.exception.DictContentException;
 import ru.ifmo.mpi.magichospital.god.exception.MeaninglessDataException;
 import ru.ifmo.mpi.magichospital.god.exception.NotFoundException;
@@ -127,15 +129,15 @@ public class MainController {
 			    content = @Content),
 			  @ApiResponse(responseCode = "500", description = "Inner exception - like no such prayer status, or prayer already answered, or you trying to make strange prayer status. Description in \"message\" field.", 
 			    content = @Content)})
-	@PostMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/{prayerId}/status/{statusId}")
+	@PatchMapping(API_PREFIX+GOD_PREFIX+"/{login}/prayers/{prayerId}")
 	public ResponseEntity<?> updatePrayerStatus(@PathVariable String login, 
 			@PathVariable int prayerId, 
-			@PathVariable int statusId,
+			@RequestBody PrayerStatusChangeDTO statusChangeDTO,
 			Principal principal) 
 					throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {
 		
 		if (principal.getName().equals(login)) {
-			prayerService.setPrayerStatus(login, prayerId, statusId);
+			prayerService.setPrayerStatus(login, prayerId, statusChangeDTO.getStatus());
 			return ResponseEntity.ok().build();
 		} else {
 			throw new SecurityException("Forbidden");
