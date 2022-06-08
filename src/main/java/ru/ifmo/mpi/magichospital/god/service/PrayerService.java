@@ -85,7 +85,11 @@ public class PrayerService {
 		if (!SqlSafeUtil.isSqlInjectionSafe(login)) {
             throw new PossibleSqlInjectionAttackException("Possible sql injection attack!");
         }
-		
+
+		System.out.println(login);
+		System.out.println(prayerId);
+		System.out.println(statusCode);
+
 		Optional<God> optionalGod = godRepository.findByLogin(login);
 		Optional<Prayer> optionalPrayer = prayerRepository.findById(prayerId);
 		Optional<PrayerStatus> optionalStatus = prayerStatusRepository.findByCode(statusCode);
@@ -102,7 +106,7 @@ public class PrayerService {
             	if (god.equals(prayer.getGod())) {
             		if (prayer.getStatus().getCode().equals(PrayerStatus.CODE_NEW)) {
                 		prayer.setStatus(status);
-                		prayerRepository.save(prayer);
+                		prayerRepository.saveAndFlush(prayer);
             		} else {
             			throw new PrayerAlreadyAnsweredException("We already received answer for this prayer!");
             		}
