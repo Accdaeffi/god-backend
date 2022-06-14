@@ -127,7 +127,7 @@ public class MainController {
 			    content = @Content),
 			  @ApiResponse(responseCode = "401", description = "Trying to answer prayer of another god", 
 			    content = @Content),
-			  @ApiResponse(responseCode = "404", description = "No such god", 
+			  @ApiResponse(responseCode = "404", description = "No such god, status or prayer", 
 			    content = @Content),
 			  @ApiResponse(responseCode = "500", description = "Inner exception - like no such prayer status, or prayer already answered, or you trying to make strange prayer status. Description in \"message\" field.", 
 			    content = @Content)})
