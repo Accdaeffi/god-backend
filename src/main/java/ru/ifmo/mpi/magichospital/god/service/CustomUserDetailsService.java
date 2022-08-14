@@ -35,7 +35,13 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .password(dbUser.getPassword())
                     .roles(dbUser.getRole().getCode())
                     .build();
-            return user;
+            
+            if (user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_GOD"))) {
+            	return user;
+            } else {
+            	return null;
+            }
+            
         } else {
         		throw new UsernameNotFoundException("Username: "+userName);
         }
