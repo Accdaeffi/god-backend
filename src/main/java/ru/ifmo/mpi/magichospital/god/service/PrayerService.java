@@ -34,6 +34,14 @@ public class PrayerService {
 		this.prayerStatusRepository = prayerStatusRepository;
 	}
 
+	/**
+	 * Получение ВСЕХ молитв, относящихся к определённому богу
+	 * 
+	 * @param login Логин бога
+	 * @return Лист молитв
+	 * @throws NotFoundException Если такого бога не существует
+	 * @throws PossibleSqlInjectionAttackException Если в названии имени бога есть SQL-иньекция
+	 */
 	public List<Prayer> getPrayers(String login) 
 			throws NotFoundException, PossibleSqlInjectionAttackException {
 		
@@ -49,6 +57,16 @@ public class PrayerService {
         }
 	}
 	
+	/**
+	 * Получение всех неотвеченных молитв, относящихся к определённому богу
+	 * 
+	 * @param login Логин бога
+	 * @return Лист молитв
+	 * @throws NotFoundException Если такого бога не существует
+	 * @throws PossibleSqlInjectionAttackException Если в названии имени бога есть SQL-иньекция
+	 * @throws DictContentException Если кто-то нахимичил в БД и теперь у нас нет статуса с кодом "Новый"
+
+	 */
 	public List<Prayer> getUnansweredPrayers(String login) 
 			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
 		
@@ -67,7 +85,15 @@ public class PrayerService {
         }
 	}
 	
-
+	/**
+	 * Получение последней неотвеченной молтвы, относящиейся к определённому богу
+	 * 
+	 * @param login Логин бога
+	 * @return Одна молитва
+	 * @throws NotFoundException Если такого бога не существует
+	 * @throws PossibleSqlInjectionAttackException Если в названии имени бога есть SQL-иньекция
+	 * @throws DictContentException Если кто-то нахимичил в БД и теперь у нас нет статуса с кодом "Новый"
+	 */
 	public Prayer getLastUnansweredPrayer(String login) 
 			throws NotFoundException, DictContentException, PossibleSqlInjectionAttackException {
 		List<Prayer> prayers = getUnansweredPrayers(login);
@@ -79,6 +105,18 @@ public class PrayerService {
 		}
 	}
 
+	/**
+	 * Изменяет статус молитвы определённого бога на указанный.
+	 * 
+	 * @param login Логин бога
+	 * @param prayerId id молитвы
+	 * @param statusCode Код нового статуса
+	 * @throws SecurityException Попытка заменить статус чужой молитвы
+	 * @throws PrayerAlreadyAnsweredException Попытка изменить статус молитвы, на которую уже был дан ответ
+	 * @throws NotFoundException Если не найдена молитва, бог или нужный статус
+	 * @throws MeaninglessDataException Попытка изменить статус на "Новый"
+	 * @throws PossibleSqlInjectionAttackException Если в названии имени бога есть SQL-иньекция 
+	 */
 	public void setPrayerStatus(String login, int prayerId, String statusCode) 
 			throws SecurityException, PrayerAlreadyAnsweredException, NotFoundException, MeaninglessDataException, PossibleSqlInjectionAttackException {
 		
